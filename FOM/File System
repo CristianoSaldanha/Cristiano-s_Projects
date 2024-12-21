@@ -1,0 +1,115 @@
+import os
+import pickle
+import csv
+def line():
+    print("---" * 3)
+def o():
+    print()
+def creator():
+    # Opener---
+    Storage = open("Storage.csv", "a", newline='')
+    content = csv.reader(Storage)
+    adder = csv.writer(Storage)
+    # ---
+    n = input("Enter File Name:")
+    file = n + ".dat"
+    f=open(file,"w")
+    f.close()
+    adder.writerow([file])
+    Storage.close()
+def Transfer():
+    Storage = open("Storage.csv", "r")
+    content = csv.reader(Storage)
+    c = 0
+    line()
+    L = []
+    for i in content:
+        L.append(i)
+        print(c + 1, *i)
+        c = c + 1
+    return L
+    Storage.close()
+    line()
+def use():
+    RealStorage = Transfer()
+    line()
+    o()
+    Entry = int(input("Pick File Number:"))
+    o()
+    line()
+    pick = RealStorage[Entry - 1]
+    print("File chose is", pick[0])
+    line()
+    return pick[0]
+def WriteBinary(a):
+    FName = a
+    File = open(str(FName), "ab")
+    while True:
+        line = input("Enter text:")
+        pickle.dump(line, File)
+        choice = input("Continue Y/N?:")
+        o()
+        if choice.lower() == "n":
+            break
+    File.close()
+def ReadBinary(a):
+    line()
+    print("Reading File Data...")
+    line()
+    FName = a
+    File = open(str(FName), "rb")
+    while True:
+        try:
+            data = pickle.load(File)
+            print(data)
+        except EOFError:
+            File.close()
+            break
+def CanOpen():
+    Named = use()
+    WriteBinary(Named)
+    ReadBinary(Named)
+def DelFile():
+    RealStorage = Transfer()
+    line()
+    o()
+    Entry = int(input("Pick File Number:"))
+    o()
+    line()
+    Storage2 = open("Storage2.csv", "w",newline="")
+    adder = csv.writer(Storage2)
+    pick = RealStorage[Entry - 1]
+    for i in RealStorage:
+        if i != pick:
+            adder.writerow(i)
+        else:
+            os.remove(i[0])
+            print("File Deleted is", i[0])
+    line()
+    # ------
+    Storage2.close()
+    os.remove("Storage.csv")
+    os.rename("Storage2.csv", "Storage.csv")
+def Display():
+    RealStorage = Transfer()
+
+while True:
+    print("=" * 8)
+    print("--Menu--")
+    print("1:Create File")
+    print("2:Delete File")
+    print("3:Display Files")
+    print("4:Use File")
+    print("5:Close")
+    print("=" * 8)
+    Choice = int(input(":"))
+    if Choice == 1:
+        creator()
+    if Choice == 2:
+        DelFile()
+    if Choice == 3:
+        Display()
+    if Choice == 4:
+        CanOpen()
+    if Choice == 5:
+        break
